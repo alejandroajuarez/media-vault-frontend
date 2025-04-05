@@ -25,11 +25,17 @@ export function MediaVaultPage() {
 		});
 	};
 
+	const handleShow = (media_entries) => {
+		console.log("handleShow called with media_entries:", media_entries);
+		// Logic for showing a specific media entry
+		// This could be a redirect or a state update to show the details of the selected entry
+	};
+
 	useEffect(handleIndex, []);
 
 	return (
 		<main>
-			<MediaVaultIndex media_entries={media_entries} />
+			<MediaVaultIndex media_entries={media_entries} onShow={handleShow} />
 			<MediaVaultNew onCreate={handleCreate} />
 		</main>
 	);

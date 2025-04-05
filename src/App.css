@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+.cover_image {
+	width: 240px;
+	height: 400px;
+	object-fit: cover;
+}

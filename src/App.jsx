@@ -2,6 +2,7 @@ import axios from "axios";
 import { Header } from "./Header";
 import { MediaVaultPage } from "./MediaVaultPage";
 import { Footer } from "./Footer";
+import "./App.css";
 
 axios.defaults.baseURL = "http://localhost:3000";
 // axios.defaults.withCredentials = true;

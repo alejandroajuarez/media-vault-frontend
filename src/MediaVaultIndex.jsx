@@ -1,4 +1,4 @@
-export function MediaVaultIndex({ media_entries }) {
+export function MediaVaultIndex({ media_entries, onShow }) {
 	return (
 		<div>
 			<h1>Media Vault Index</h1>
@@ -6,9 +6,14 @@ export function MediaVaultIndex({ media_entries }) {
 				<div key={entry.id}>
 					<h2>{entry.title}</h2>
 					<p>{entry.description}</p>
-					<img src={entry.image_url} alt={entry.title} />
+					<img
+						className="cover_image"
+						src={entry.image_url}
+						alt={entry.title}
+					/>
 					<p>Type: {entry.media_type}</p>
 					<p>Creator: {entry.creator}</p>
+					<button onClick={() => onShow(entry)}>More Info</button>
 				</div>
 			))}
 		</div>
