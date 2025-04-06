@@ -47,6 +47,14 @@ export function MediaVaultPage() {
 		});
 	};
 
+	const handleDestroy = (media) => {
+		console.log("handleDestroy called with media:", media);
+		axios.delete(`/media/${media.id}.json`).then(() => {
+			setMediaEntries(media_entries.filter((entry) => entry.id !== media.id));
+			setIsMediaShowVisible(false);
+		});
+	};
+
 	useEffect(handleIndex, []);
 
 	return (
@@ -57,7 +65,11 @@ export function MediaVaultPage() {
 				show={isMediaShowVisible}
 				onClose={() => setIsMediaShowVisible(false)}
 			>
-				<MediaVaultShow media={currentMedia} onUpdate={handleUpdate} />
+				<MediaVaultShow
+					media={currentMedia}
+					onUpdate={handleUpdate}
+					onDestroy={handleDestroy}
+				/>
 			</Modal>
 		</main>
 	);

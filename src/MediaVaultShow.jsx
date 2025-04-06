@@ -1,4 +1,4 @@
-export function MediaVaultShow({ media, onUpdate }) {
+export function MediaVaultShow({ media, onUpdate, onDestroy }) {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		const form = event.target;
@@ -45,6 +45,7 @@ export function MediaVaultShow({ media, onUpdate }) {
 				</div>
 				<button type="submit">Update</button>
 			</form>
+			<button onClick={() => onDestroy(media)}>Delete</button>
 		</div>
 	);
 }
