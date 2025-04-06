@@ -9,7 +9,7 @@ export function MediaVaultNewPage() {
 		console.log("handleCreate called", params);
 		axios.post("/media.json", params).then((response) => {
 			console.log("Response data:", response.data);
-			navigate("/media"); // Redirect to the Media Vault page after creation
+			navigate("/"); // Redirect to the Media Vault page after creation
 		});
 	};
 

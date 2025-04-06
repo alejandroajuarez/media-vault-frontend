@@ -60,7 +60,6 @@ export function MediaVaultPage() {
 	return (
 		<main>
 			<MediaVaultIndex media_entries={media_entries} onShow={handleShow} />
-			<MediaVaultNew onCreate={handleCreate} />
 			<Modal
 				show={isMediaShowVisible}
 				onClose={() => setIsMediaShowVisible(false)}
