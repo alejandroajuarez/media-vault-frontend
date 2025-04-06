@@ -34,6 +34,19 @@ export function MediaVaultPage() {
 		setCurrentMedia(media);
 	};
 
+	const handleUpdate = (media, params, successCallback) => {
+		console.log("handleUpdate");
+		axios.patch(`/media/${media.id}.json`, params).then((response) => {
+			setMediaEntries(
+				media_entries.map((entry) =>
+					entry.id === response.data.id ? response.data : entry
+				)
+			);
+			successCallback();
+			setIsMediaShowVisible(false);
+		});
+	};
+
 	useEffect(handleIndex, []);
 
 	return (
@@ -44,7 +57,7 @@ export function MediaVaultPage() {
 				show={isMediaShowVisible}
 				onClose={() => setIsMediaShowVisible(false)}
 			>
-				<MediaVaultShow media={currentMedia} />
+				<MediaVaultShow media={currentMedia} onUpdate={handleUpdate} />
 			</Modal>
 		</main>
 	);

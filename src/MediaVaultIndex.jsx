@@ -14,6 +14,9 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 					<p>Type: {media.media_type}</p>
 					<p>Creator: {media.creator}</p>
 					<button onClick={() => onShow(media)}>More Info</button>
+					<br />
+					<hr />
+					<br />
 				</div>
 			))}
 		</div>

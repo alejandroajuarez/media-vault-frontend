@@ -25,16 +25,16 @@ export function MediaVaultNew({ onCreate }) {
 				</label>
 				<br />
 				<label>
-					Image URL:
+					Cover Image:
 					<input type="url" name="image_url" required />
 				</label>
 				<br />
 				<label>
 					Type:
 					<select name="media_type" required>
-						<option value="show">TV Show</option>
-						<option value="video">Movie</option>
-						<option value="book">Book</option>
+						<option>TV Show</option>
+						<option>Movie</option>
+						<option>Book</option>
 					</select>
 				</label>
 				<br />
