@@ -1,10 +1,12 @@
-import axios from "axios";
-
-export function MediaVaultShow() {
+export function MediaVaultShow({ media }) {
 	return (
 		<div className="media-vault-show">
-			<h1>Media Vault Show</h1>
-			{/* Add your content here */}
+			<h1>Vault Entry Information</h1>
+			<p>Title: {media.title}</p>
+			<p>Description: {media.description}</p>
+			<p>Media Type: {media.media_type}</p>
+			<p>Cover Image: {media.cover_image}</p>
+			<p>Creator: {media.creator}</p>
 		</div>
 	);
 }

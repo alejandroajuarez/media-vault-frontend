@@ -1,11 +1,14 @@
 import { MediaVaultNew } from "./MediaVaultNew";
 import { MediaVaultIndex } from "./MediaVaultIndex";
 import { MediaVaultShow } from "./MediaVaultShow";
+import { Modal } from "./Modal";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 export function MediaVaultPage() {
 	const [media_entries, setMediaEntries] = useState([]);
+	const [isMediaShowVisible, setIsMediaShowVisible] = useState(false);
+	const [currentMedia, setCurrentMedia] = useState({});
 
 	const handleIndex = () => {
 		console.log("handleIndex called");
@@ -25,10 +28,10 @@ export function MediaVaultPage() {
 		});
 	};
 
-	const handleShow = (media_entries) => {
-		console.log("handleShow called with media_entries:", media_entries);
-		// Logic for showing a specific media entry
-		// This could be a redirect or a state update to show the details of the selected entry
+	const handleShow = (media) => {
+		console.log("handleShow called with media:", media);
+		setIsMediaShowVisible(true);
+		setCurrentMedia(media);
 	};
 
 	useEffect(handleIndex, []);
@@ -37,6 +40,12 @@ export function MediaVaultPage() {
 		<main>
 			<MediaVaultIndex media_entries={media_entries} onShow={handleShow} />
 			<MediaVaultNew onCreate={handleCreate} />
+			<Modal
+				show={isMediaShowVisible}
+				onClose={() => setIsMediaShowVisible(false)}
+			>
+				<MediaVaultShow media={currentMedia} />
+			</Modal>
 		</main>
 	);
 }

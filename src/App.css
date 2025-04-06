@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 .cover_image {
-	width: 240px;
+	width: 250px;
 	height: 400px;
 	object-fit: cover;
 }
