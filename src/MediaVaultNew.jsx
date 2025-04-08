@@ -1,18 +1,19 @@
 import axios from "axios";
-import { useState } from "react";
 
-export function MediaVaultNew({ onCreate }) {
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		const form = event.target;
-		const params = new FormData(form);
-		const successCallback = () => form.reset();
-		// Convert FormData to a regular object
-		onCreate(params, successCallback);
-	};
+export function MediaVaultNew() {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log("Handling Submit");
+    const params = new FormData(event.target);
+    axios.post("http://localhost:3000/media.json", params).then(response => {
+      console.log(response.data);
+      window.location.href = "/"
+    })
+  }
 
 	return (
 		<div>
+			<h1>Create New Media Entry</h1>
 			<form onSubmit={handleSubmit}>
 				<label>
 					Title:
@@ -26,7 +27,7 @@ export function MediaVaultNew({ onCreate }) {
 				<br />
 				<label>
 					Cover Image:
-					<input type="url" name="image_url" required />
+					<input type="url" name="image_url" />
 				</label>
 				<br />
 				<label>
@@ -46,7 +47,6 @@ export function MediaVaultNew({ onCreate }) {
 				<button type="submit">Create Media Entry</button>
 			</form>
 			<p>Click the button to create a new media entry.</p>
-			{/* Add any additional content or styling here */}
 		</div>
 	);
 }

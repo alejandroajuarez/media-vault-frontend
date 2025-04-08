@@ -1,7 +1,7 @@
 import axios from "axios";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import { MediaVaultPage } from "./MediaVaultPage";
-import { MediaVaultNewPage } from "./MediaVaultNewPage";
+import { MediaVaultNew } from "./MediaVaultNew";
 import { SignupPage } from "./SignupPage";
 import { LoginPage } from "./LoginPage";
 import { LogoutLink } from "./LogoutLink";
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/media/new",
-				element: <MediaVaultNewPage />,
+				element: <MediaVaultNew />,
 			},
 		],
 	},

@@ -5,6 +5,7 @@ export function MediaVaultShow({ media, onUpdate, onDestroy }) {
 		const params = new FormData(form);
 		const successCallback = () => form.reset();
 		onUpdate(media, params, successCallback);
+		window.location.href = "/";
 	};
 
 	return (

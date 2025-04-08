@@ -1,4 +1,3 @@
-import { MediaVaultNew } from "./MediaVaultNew";
 import { MediaVaultIndex } from "./MediaVaultIndex";
 import { MediaVaultShow } from "./MediaVaultShow";
 import { Modal } from "./Modal";
@@ -18,15 +17,15 @@ export function MediaVaultPage() {
 		});
 	};
 
-	const handleCreate = (params, successCallback) => {
-		console.log("handleCreate called");
-		// Logic for creating a new media entry
-		axios.post("/media.json", params).then((response) => {
-			// console.log("Response data:", response.data);
-			setMediaEntries([...media_entries, response.data]);
-			successCallback();
-		});
-	};
+	// const handleCreate = (params, successCallback) => {
+	// 	console.log("handleCreate called");
+	// 	// Logic for creating a new media entry
+	// 	axios.post("/media.json", params).then((response) => {
+	// 		// console.log("Response data:", response.data);
+	// 		setMediaEntries([...media_entries, response.data]);
+	// 		successCallback();
+	// 	});
+	// };
 
 	const handleShow = (media) => {
 		console.log("handleShow called with media:", media);
