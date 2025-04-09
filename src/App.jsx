@@ -2,6 +2,7 @@ import axios from "axios";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import { MediaVaultPage } from "./MediaVaultPage";
 import { MediaVaultNew } from "./MediaVaultNew";
+import { SavedIndex } from "./SavedIndex";
 import { SignupPage } from "./SignupPage";
 import { LoginPage } from "./LoginPage";
 import { LogoutLink } from "./LogoutLink";
@@ -38,6 +39,11 @@ const router = createBrowserRouter([
 				path: "/media/new",
 				element: <MediaVaultNew />,
 			},
+      {
+        path: "/saved",
+        element: <SavedIndex />,
+        loader: () => { axios.get("/saved.json").then(response => response.data)}
+      },
 		],
 	},
 ]);

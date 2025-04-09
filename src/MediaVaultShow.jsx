@@ -1,4 +1,17 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+
 export function MediaVaultShow({ media, onUpdate, onDestroy }) {
+
+	const [savedMedia, setSavedMedia] = useState([]);
+	const getSavedMedia = () => {
+		axios.get("http://localhost:3000/media.json").then((response) => {
+			setSavedMedia(response.data);
+		});
+	}
+
+	useEffect(getSavedMedia, []);
+
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		const form = event.target;
@@ -7,6 +20,16 @@ export function MediaVaultShow({ media, onUpdate, onDestroy }) {
 		onUpdate(media, params, successCallback);
 		window.location.href = "/";
 	};
+
+	const handleSubmitSaved = (event) => {
+		event.preventDefault();
+		console.log("Saving Entry to Vault");
+		const params = new FormData(event.target);
+		axios.post("http://localhost:3000/saved.json", params).then((response) => {
+			console.log(response.data);
+			// window.location.href = "/";
+		});
+	}
 
 	return (
 		<div className="media-vault-show">
@@ -47,6 +70,11 @@ export function MediaVaultShow({ media, onUpdate, onDestroy }) {
 				<button type="submit">Update</button>
 			</form>
 			<button onClick={() => onDestroy(media)}>Delete</button>
+			<hr />
+			<form onSubmit={handleSubmitSaved}>
+				<input type="hidden" name="media_entry_id" value={media.id} />
+				<button type="submit">Save to Vault</button>
+			</form>
 		</div>
 	);
 }
