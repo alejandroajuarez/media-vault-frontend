@@ -15,6 +15,11 @@ export function SavedIndex() {
 
   console.log("Saved Media:", savedMedia);
   return (
+
+    // This page needs to be filtered by saved, in-progress, and archived
+    // The saved_media should be displayed in a grid format
+    // There will be a drop-down box that will cycle the saved_media by media_type (TV, Movie, Book)
+
     <div>
       <h1>Your Saved Entries</h1>
       <hr />

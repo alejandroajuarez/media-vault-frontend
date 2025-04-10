@@ -6,6 +6,18 @@ export function MediaVaultShow({ media }) {
 		event.preventDefault();
 		console.log("Saving Entry to Vault");
 		const params = new FormData(event.target);
+
+		let media_status = params.get("media_status");
+
+		// This will allow filtering by media_status
+		if (media_status === "Save for Later") {
+			params.set("media_status", "saved");
+		} else if (media_status === "In-Progress") {
+			params.set("media_status", "in_progress");
+		} else if (media_status === "Archived") {
+			params.set("media_status", "archived");
+		}
+
 		axios.post("http://localhost:3000/saved.json", params).then((response) => {
 			console.log(response.data);
 			// window.location.href = "/";
