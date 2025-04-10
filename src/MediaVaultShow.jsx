@@ -1,25 +1,6 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
 
-export function MediaVaultShow({ media, onUpdate, onDestroy }) {
-
-	const [savedMedia, setSavedMedia] = useState([]);
-	const getSavedMedia = () => {
-		axios.get("http://localhost:3000/media.json").then((response) => {
-			setSavedMedia(response.data);
-		});
-	}
-
-	useEffect(getSavedMedia, []);
-
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		const form = event.target;
-		const params = new FormData(form);
-		const successCallback = () => form.reset();
-		onUpdate(media, params, successCallback);
-		window.location.href = "/";
-	};
+export function MediaVaultShow({ media }) {
 
 	const handleSubmitSaved = (event) => {
 		event.preventDefault();
@@ -39,40 +20,25 @@ export function MediaVaultShow({ media, onUpdate, onDestroy }) {
 			<p>Media Type: {media.media_type}</p>
 			<p>Cover Image: {media.image_url}</p>
 			<p>Creator: {media.creator}</p>
-			<form onSubmit={handleSubmit}>
-				<div>
-					Title: <input defaultValue={media.title} name="title" type="text" />
-				</div>
-				<div>
-					Description:
-					<input
-						defaultValue={media.description}
-						name="description"
-						type="text"
-					/>
-				</div>
-				<div>
-					Media Type:
-					<select defaultValue={media.media_type} name="media_type" required>
-						<option>TV Show</option>
-						<option>Movie</option>
-						<option>Book</option>
-					</select>
-				</div>
-				<div>
-					Cover Image:{" "}
-					<input defaultValue={media.image_url} name="image_url" type="text" />
-				</div>
-				<div>
-					Creator:{" "}
-					<input defaultValue={media.creator} name="creator" type="text" />
-				</div>
-				<button type="submit">Update</button>
-			</form>
-			<button onClick={() => onDestroy(media)}>Delete</button>
 			<hr />
 			<form onSubmit={handleSubmitSaved}>
-				<input type="hidden" name="media_entry_id" value={media.id} />
+					<div>
+						How would you like to save this?
+						<select defaultValue={media.media_status} name="media_status">
+							<option>Save for Later</option>
+							<option>In-Progress</option>
+							<option>Archived</option>
+						</select>
+					</div>	
+					<div>
+						Where have you left off?
+							<input defaultValue={media.progress} type="text" name="progress" />
+					</div>
+					<div>
+					// Favorite logic will go here
+					</div>
+					<input type="hidden" name="creator" value={media.creator} />
+					<input type="hidden" name="media_entry_id" value={media.id} />
 				<button type="submit">Save to Vault</button>
 			</form>
 		</div>

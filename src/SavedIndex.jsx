@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useLoaderData } from "react-router-dom";
 
 export function SavedIndex() {
   const [savedMedia, setSavedMedia] = useState([]);
@@ -18,18 +17,21 @@ export function SavedIndex() {
   return (
     <div>
       <h1>Your Saved Entries</h1>
+      <hr />
       {savedMedia.map((sm) => (
         <div key={sm.id}>
           <h2>{sm.media_entry.title}</h2>
-          <p>{sm.rating}</p>
           <img
             className="cover_image"
             src={sm.media_entry.image_url}
             alt={sm.media_entry.title}
-          />
-          <p>{sm.description}</p>
+            />
+          <p>{sm.rating}</p>
+          <p>{sm.media_entry.description}</p>
           <p>Type: {sm.media_type}</p>
-          <p>Creator: {sm.creator}</p>
+          <p>Progress: {sm.progress}</p>
+          <p>Creator: {sm.media_entry.creator}</p>
+          <p>Status: {sm.media_status}</p>
           <br />
           <hr />
           <br />
