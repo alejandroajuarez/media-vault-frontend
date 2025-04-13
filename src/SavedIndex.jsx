@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Rating, ThinStar } from "@smastrom/react-rating";
 
-// Custom star styling for the Rating component
+// Styles for the thin stars remain unchanged.
 const myStyles = {
 	itemShapes: ThinStar,
 	activeFillColor: "#ffb700",
@@ -10,11 +10,10 @@ const myStyles = {
 };
 
 export function SavedIndex() {
-	// State to manage saved media and selected media type filter
 	const [savedMedia, setSavedMedia] = useState([]);
 	const [selectedMediaType, setSelectedMediaType] = useState("Book");
 
-	// Fetch saved media from the backend on component mount
+	// Fetch saved media on component mount.
 	useEffect(() => {
 		console.log("Fetching saved media...");
 		axios
@@ -26,13 +25,30 @@ export function SavedIndex() {
 			.catch((error) => console.error("Error fetching saved media:", error));
 	}, []);
 
-	// Filter savedMedia based on the selected media type.
-	// Assumes each savedMedia has a nested media_entry with a media_type property.
+	// Toggle the favorite status for a given saved media item.
+	const handleToggleFavorite = (savedMediaId, currentFavorite) => {
+		axios
+			.patch(`http://localhost:3000/saved/${savedMediaId}.json`, {
+				favorite: !currentFavorite,
+			})
+			.then(() => {
+				setSavedMedia((prevMedia) =>
+					prevMedia.map((item) =>
+						item.id === savedMediaId
+							? { ...item, favorite: !currentFavorite }
+							: item
+					)
+				);
+			})
+			.catch((error) => console.error("Error toggling favorite:", error));
+	};
+
+	// Filter the saved media by the selected media type.
 	const filteredMedia = savedMedia.filter(
 		(sm) => sm.media_entry.media_type === selectedMediaType
 	);
 
-	// Group media by status
+	// Group filtered media by status.
 	const savedGroup = filteredMedia.filter((sm) => sm.media_status === "saved");
 	const inProgressGroup = filteredMedia.filter(
 		(sm) => sm.media_status === "in_progress"
@@ -41,102 +57,120 @@ export function SavedIndex() {
 		(sm) => sm.media_status === "archived"
 	);
 
-	// Render a single media entry
+	// Render each media entry as a card.
 	const renderMediaEntry = (sm) => (
 		<div
 			key={sm.id}
-			style={{
-				marginBottom: "10px",
-				borderBottom: "1px solid #ccc",
-				paddingBottom: "10px",
-			}}
+			className="bg-white rounded-lg p-4 shadow-md overflow-hidden w-80 h-[500px] flex flex-col"
 		>
-			<h3>{sm.media_entry.title}</h3>
-			<img
-				className="cover_image"
-				src={sm.media_entry.image_url}
-				alt={sm.media_entry.title}
-				style={{ maxWidth: "100%", height: "auto" }}
-			/>
-			<Rating
-				style={{ maxWidth: 300 }}
-				value={Number(sm.rating)}
-				onChange={(value) => {
-					console.log(`New rating for ${sm.media_entry.title}:`, value);
-					// Update local state
-					setSavedMedia((prevMedia) =>
-						prevMedia.map((item) =>
-							item.id === sm.id ? { ...item, rating: value } : item
-						)
-					);
-				}}
-				itemStyles={myStyles}
-			/>
-
-			<p>{sm.media_entry.description}</p>
-			{/* Uncomment if needed: <p>Type: {sm.media_entry.media_type}</p> */}
-			<p>Progress: {sm.progress}</p>
-			<p>Creator: {sm.media_entry.creator}</p>
+			{/* Image container with favorite heart positioned at top right */}
+			<div className="relative h-74 w-full">
+				<img
+					src={sm.media_entry.image_url}
+					alt={sm.media_entry.title}
+					className="w-full h-full object-contain"
+				/>
+				<button
+					onClick={() => handleToggleFavorite(sm.id, sm.favorite)}
+					className="absolute top-2 right-2 p-0 bg-transparent border-0 cursor-pointer"
+					aria-label="Toggle Favorite"
+				>
+					{sm.favorite ? (
+						<span className="text-red-500 text-2xl">❤️</span>
+					) : (
+						<span className="text-gray-500 text-2xl">♡</span>
+					)}
+				</button>
+			</div>
+			{/* Card content */}
+			<div className="p-4 flex flex-col flex-grow">
+				<h3 className="text-xl font-semibold mb-2 truncate">
+					{sm.media_entry.title}
+				</h3>
+				<div className="mb-2" style={{ maxWidth: "150px" }}>
+					<Rating
+						value={Number(sm.rating)}
+						onChange={(value) => {
+							console.log(`New rating for ${sm.id}:`, value);
+							setSavedMedia((prevMedia) =>
+								prevMedia.map((item) =>
+									item.id === sm.id ? { ...item, rating: value } : item
+								)
+							);
+						}}
+						itemStyles={myStyles}
+						fractions={2}
+						style={{ maxWidth: 150 }}
+					/>
+				</div>
+				<p className="text-sm mb-1">{sm.media_entry.description}</p>
+				<p className="text-sm mb-1">Progress: {sm.progress}</p>
+				<p className="text-sm">Creator: {sm.media_entry.creator}</p>
+			</div>
 		</div>
 	);
 
 	return (
-		<div style={{ padding: "20px" }}>
-			{/* Header */}
-			<h1>Your Vaulted Media</h1>
-
-			{/* Media Type Filter Buttons */}
-			<div style={{ marginBottom: "20px" }}>
+		<div className="p-5">
+			<h1 className="text-2xl font-bold mb-4">Your Vaulted Media</h1>
+			{/* Filter Buttons */}
+			<div className="mb-5">
 				<button
 					onClick={() => setSelectedMediaType("Book")}
-					style={{
-						fontWeight: selectedMediaType === "Book" ? "bold" : "normal",
-						marginRight: "10px",
-					}}
+					className={`mr-2 ${
+						selectedMediaType === "Book" ? "font-bold" : "font-normal"
+					}`}
 				>
 					Books
 				</button>
 				<button
 					onClick={() => setSelectedMediaType("TV Show")}
-					style={{
-						fontWeight: selectedMediaType === "TV Show" ? "bold" : "normal",
-						marginRight: "10px",
-					}}
+					className={`mr-2 ${
+						selectedMediaType === "TV Show" ? "font-bold" : "font-normal"
+					}`}
 				>
 					TV Shows
 				</button>
 				<button
 					onClick={() => setSelectedMediaType("Movie")}
-					style={{
-						fontWeight: selectedMediaType === "Movie" ? "bold" : "normal",
-					}}
+					className={`${
+						selectedMediaType === "Movie" ? "font-bold" : "font-normal"
+					}`}
 				>
 					Movies
 				</button>
 			</div>
-
-			{/* Render grouped media entries */}
-			<div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+			{/* Status Groups arranged as horizontal rows */}
+			<div className="space-y-10">
+				{/* Saved Row */}
 				<div>
-					<h2>Saved</h2>
+					<h2 className="text-xl font-bold mb-4">Saved</h2>
 					{savedGroup.length > 0 ? (
-						savedGroup.map(renderMediaEntry)
+						<div className="flex flex-row gap-5 overflow-x-auto">
+							{savedGroup.map(renderMediaEntry)}
+						</div>
 					) : (
 						<p>No saved entries</p>
 					)}
 				</div>
+				{/* In Progress Row */}
 				<div>
-					<h2>In Progress</h2>
+					<h2 className="text-xl font-bold mb-4">In Progress</h2>
 					{inProgressGroup.length > 0 ? (
-						inProgressGroup.map(renderMediaEntry)
+						<div className="flex flex-row gap-5 overflow-x-auto">
+							{inProgressGroup.map(renderMediaEntry)}
+						</div>
 					) : (
 						<p>No in-progress entries</p>
 					)}
 				</div>
+				{/* Archived Row */}
 				<div>
-					<h2>Archived</h2>
+					<h2 className="text-xl font-bold mb-4">Archived</h2>
 					{archivedGroup.length > 0 ? (
-						archivedGroup.map(renderMediaEntry)
+						<div className="flex flex-row gap-5 overflow-x-auto">
+							{archivedGroup.map(renderMediaEntry)}
+						</div>
 					) : (
 						<p>No archived entries</p>
 					)}
