@@ -1,13 +1,20 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Rating, ThinStar } from "@smastrom/react-rating";
+
+// Custom star styling for the Rating component
+const myStyles = {
+	itemShapes: ThinStar,
+	activeFillColor: "#ffb700",
+	inactiveFillColor: "#fbf1a9",
+};
 
 export function SavedIndex() {
-	// savedMedia holds the entire list from the backend
+	// State to manage saved media and selected media type filter
 	const [savedMedia, setSavedMedia] = useState([]);
-	// selectedMediaType holds the filter value; you may choose a different default (or add an "All" option)
-	const [selectedMediaType, setSelectedMediaType] = useState("Books");
+	const [selectedMediaType, setSelectedMediaType] = useState("Book");
 
-	// Fetch saved media on component mount
+	// Fetch saved media from the backend on component mount
 	useEffect(() => {
 		console.log("Fetching saved media...");
 		axios
@@ -19,14 +26,13 @@ export function SavedIndex() {
 			.catch((error) => console.error("Error fetching saved media:", error));
 	}, []);
 
-	// Filter the saved media by the selected media type.
-	// Assumes that each savedMedia record contains a nested media_entry
-	// with a media_type field that exactly equals one of "Books", "TV Shows", or "Movies".
+	// Filter savedMedia based on the selected media type.
+	// Assumes each savedMedia has a nested media_entry with a media_type property.
 	const filteredMedia = savedMedia.filter(
 		(sm) => sm.media_entry.media_type === selectedMediaType
 	);
 
-	// Group the filtered media by status
+	// Group media by status
 	const savedGroup = filteredMedia.filter((sm) => sm.media_status === "saved");
 	const inProgressGroup = filteredMedia.filter(
 		(sm) => sm.media_status === "in_progress"
@@ -35,7 +41,7 @@ export function SavedIndex() {
 		(sm) => sm.media_status === "archived"
 	);
 
-	// Helper function to render each media entry
+	// Render a single media entry
 	const renderMediaEntry = (sm) => (
 		<div
 			key={sm.id}
@@ -52,9 +58,23 @@ export function SavedIndex() {
 				alt={sm.media_entry.title}
 				style={{ maxWidth: "100%", height: "auto" }}
 			/>
-			<p>{sm.rating}</p>
+			<Rating
+				style={{ maxWidth: 300 }}
+				value={Number(sm.rating)}
+				onChange={(value) => {
+					console.log(`New rating for ${sm.media_entry.title}:`, value);
+					// Update local state
+					setSavedMedia((prevMedia) =>
+						prevMedia.map((item) =>
+							item.id === sm.id ? { ...item, rating: value } : item
+						)
+					);
+				}}
+				itemStyles={myStyles}
+			/>
+
 			<p>{sm.media_entry.description}</p>
-			<p>Type: {sm.media_entry.media_type}</p>
+			{/* Uncomment if needed: <p>Type: {sm.media_entry.media_type}</p> */}
 			<p>Progress: {sm.progress}</p>
 			<p>Creator: {sm.media_entry.creator}</p>
 		</div>
@@ -62,12 +82,10 @@ export function SavedIndex() {
 
 	return (
 		<div style={{ padding: "20px" }}>
+			{/* Header */}
 			<h1>Your Vaulted Media</h1>
 
-			{/* 
-        Filter Buttons: Clicking a button changes the filter.
-        The currently selected filter is highlighted by bold text.
-      */}
+			{/* Media Type Filter Buttons */}
 			<div style={{ marginBottom: "20px" }}>
 				<button
 					onClick={() => setSelectedMediaType("Book")}
@@ -97,10 +115,7 @@ export function SavedIndex() {
 				</button>
 			</div>
 
-			{/* Debug: Uncomment the next line to view the raw JSON data */}
-			{/* <pre>{JSON.stringify(filteredMedia, null, 2)}</pre> */}
-
-			{/* Layout the status groups vertically */}
+			{/* Render grouped media entries */}
 			<div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
 				<div>
 					<h2>Saved</h2>

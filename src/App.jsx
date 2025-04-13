@@ -39,11 +39,15 @@ const router = createBrowserRouter([
 				path: "/media/new",
 				element: <MediaVaultNew />,
 			},
-      {
-        path: "/saved",
-        element: <SavedIndex />,
-        loader: () => { axios.get("http://localhost:3000/saved.json").then(response => response.data)}
-      },
+			{
+				path: "/saved",
+				element: <SavedIndex />,
+				loader: () => {
+					axios
+						.get("http://localhost:3000/saved.json")
+						.then((response) => response.data);
+				},
+			},
 		],
 	},
 ]);
