@@ -25,9 +25,6 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 				<h2 className="text-xl font-semibold mb-2 truncate">{media.title}</h2>
 				<p className="text-sm mb-2">{media.description}</p>
 				<p className="text-sm mb-2">
-					<strong>Type:</strong> {media.media_type}
-				</p>
-				<p className="text-sm mb-2">
 					<strong>Creator:</strong> {media.creator}
 				</p>
 				<button
