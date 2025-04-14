@@ -1,35 +1,41 @@
 export function MediaVaultIndex({ media_entries, onShow }) {
-	// Group media entries by type
 	const books = media_entries.filter((media) => media.media_type === "Book");
-	const tvShows = media_entries.filter(
-		(media) => media.media_type === "TV Show"
-	);
+	const tvShows = media_entries.filter((media) => media.media_type === "TV Show");
 	const movies = media_entries.filter((media) => media.media_type === "Movie");
 
-	// Card component for each media entry
 	const renderCard = (media) => (
 		<div
 			key={media.id}
-			className="bg-white rounded-lg shadow-md overflow-hidden w-80 h-[500px] flex flex-col"
+			className="bg-white rounded-lg shadow-md w-70 h-auto flex-shrink-0 snap-center flex flex-col"
 		>
-			{/* Image container */}
-			<div className="relative h-64 w-full">
+			{/* Image */}
+			<div className="relative pt-6 h-86 w-full">
 				<img
 					src={media.image_url}
 					alt={media.title}
 					className="w-full h-full object-contain"
 				/>
 			</div>
-			{/* Card content */}
-			<div className="p-4 flex flex-col flex-grow">
+
+			{/* Content container */}
+			<div className="p-4 flex flex-col flex-grow overflow-hidden">
+				{/* Title */}
 				<h2 className="text-xl font-semibold mb-2 truncate">{media.title}</h2>
-				<p className="text-sm mb-2">{media.description}</p>
+
+				{/* Scrollable description */}
+				<div className="text-sm mb-2 overflow-y-auto max-h-[100px]">
+					{media.description}
+				</div>
+
+				{/* Creator line */}
 				<p className="text-sm mb-2">
 					<strong>Creator:</strong> {media.creator}
 				</p>
+
+				{/* Button pinned to bottom */}
 				<button
 					onClick={() => onShow(media)}
-					className="mt-auto bg-blue-500 text-white px-4 py-2 rounded"
+					className="mt-4 bg-blue-500 text-white px-4 py-1 rounded"
 				>
 					More Info
 				</button>
@@ -37,45 +43,25 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 		</div>
 	);
 
+	const renderRow = (label, items) => (
+		<div className="mb-10">
+			<h2 className="text-xl font-semibold mb-2">{label}</h2>
+			{items.length > 0 ? (
+				<div className="flex gap-5 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory scrollbar-hide">
+					{items.map(renderCard)}
+				</div>
+			) : (
+				<p>No {label} found.</p>
+			)}
+		</div>
+	);
+
 	return (
 		<div className="p-5">
 			<h1 className="text-2xl font-bold mb-4">Media Vault Index</h1>
-
-			{/* Books Row */}
-			<div className="mb-10">
-				<h2 className="text-xl font-semibold mb-2">Books</h2>
-				{books.length > 0 ? (
-					<div className="flex flex-row gap-5 overflow-x-auto">
-						{books.map(renderCard)}
-					</div>
-				) : (
-					<p>No Books found.</p>
-				)}
-			</div>
-
-			{/* TV Shows Row */}
-			<div className="mb-10">
-				<h2 className="text-xl font-semibold mb-2">TV Shows</h2>
-				{tvShows.length > 0 ? (
-					<div className="flex flex-row gap-5 overflow-x-auto">
-						{tvShows.map(renderCard)}
-					</div>
-				) : (
-					<p>No TV Shows found.</p>
-				)}
-			</div>
-
-			{/* Movies Row */}
-			<div>
-				<h2 className="text-xl font-semibold mb-2">Movies</h2>
-				{movies.length > 0 ? (
-					<div className="flex flex-row gap-5 overflow-x-auto">
-						{movies.map(renderCard)}
-					</div>
-				) : (
-					<p>No Movies found.</p>
-				)}
-			</div>
+			{renderRow("Books", books)}
+			{renderRow("TV Shows", tvShows)}
+			{renderRow("Movies", movies)}
 		</div>
 	);
 }
