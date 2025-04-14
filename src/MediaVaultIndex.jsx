@@ -9,7 +9,7 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 			className="bg-white rounded-lg shadow-md w-70 h-auto flex-shrink-0 snap-center flex flex-col"
 		>
 			{/* Image */}
-			<div className="relative pt-6 h-86 w-full">
+			<div className="relative p-4 h-90 w-full">
 				<img
 					src={media.image_url}
 					alt={media.title}
@@ -29,7 +29,8 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 
 				{/* Creator line */}
 				<p className="text-sm mb-2">
-					<strong>Creator:</strong> {media.creator}
+					<strong>{media.media_type === "Book" ? "Author" : "Director"}:
+					</strong>{" "}{media.creator}
 				</p>
 
 				{/* Button pinned to bottom */}
