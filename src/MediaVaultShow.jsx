@@ -12,7 +12,7 @@ export function MediaVaultShow({ media }) {
 			.then((response) => {
 				console.log("Response:", response.data);
 				// Optionally, you can redirect or update UI here:
-				// window.location.href = "/";
+				window.location.href = "/";
 			})
 			.catch((error) => console.error("Error during saving:", error));
 	};
@@ -38,10 +38,10 @@ export function MediaVaultShow({ media }) {
 					<strong>Description:</strong> {media.description}
 				</p>
 				<p className="mb-2">
-					<strong>Media Type:</strong> {media.media_type}
-				</p>
-				<p className="mb-2">
-					<strong>Creator:</strong> {media.creator}
+					<strong>
+						{media.media_type === "Book" ? "Author" : "Director"}:
+					</strong>{" "}
+					{media.creator}
 				</p>
 				<hr className="my-4" />
 				<form onSubmit={handleSubmitSaved}>
@@ -60,7 +60,10 @@ export function MediaVaultShow({ media }) {
 						</select>
 					</div>
 					<div className="mb-4">
-						<label className="block mb-2">Where have you left off?</label>
+						<label className="block mb-2">
+							Enter your current progress (e.g., page number, chapter, or
+							episode):
+						</label>
 						<input
 							defaultValue={media.progress}
 							type="text"
@@ -68,7 +71,6 @@ export function MediaVaultShow({ media }) {
 							className="border border-gray-300 rounded px-2 py-1 w-full"
 						/>
 					</div>
-					<div className="mb-4">// Favorite logic will go here</div>
 					<input type="hidden" name="creator" value={media.creator} />
 					<input type="hidden" name="media_entry_id" value={media.id} />
 					<button

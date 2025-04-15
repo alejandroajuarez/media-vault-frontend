@@ -1,6 +1,8 @@
 export function MediaVaultIndex({ media_entries, onShow }) {
 	const books = media_entries.filter((media) => media.media_type === "Book");
-	const tvShows = media_entries.filter((media) => media.media_type === "TV Show");
+	const tvShows = media_entries.filter(
+		(media) => media.media_type === "TV Show"
+	);
 	const movies = media_entries.filter((media) => media.media_type === "Movie");
 
 	const renderCard = (media) => (
@@ -18,28 +20,32 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 			</div>
 
 			{/* Content container */}
-			<div className="p-4 flex flex-col flex-grow overflow-hidden">
+			<div className="p-4 flex flex-col flex-grow justify-between overflow-hidden">
 				{/* Title */}
 				<h2 className="text-xl font-semibold mb-2 truncate">{media.title}</h2>
 
-				{/* Scrollable description */}
-				<div className="text-sm mb-2 overflow-y-auto max-h-[100px]">
+				{/* Truncated description using Tailwind line clamp */}
+				<div className="text-sm mb-2 overflow-hidden line-clamp-3">
 					{media.description}
 				</div>
 
 				{/* Creator line */}
 				<p className="text-sm mb-2">
-					<strong>{media.media_type === "Book" ? "Author" : "Director"}:
-					</strong>{" "}{media.creator}
+					<strong>
+						{media.media_type === "Book" ? "Author" : "Director"}:
+					</strong>{" "}
+					{media.creator}
 				</p>
 
 				{/* Button pinned to bottom */}
-				<button
-					onClick={() => onShow(media)}
-					className="mt-4 bg-blue-500 text-white px-4 py-1 rounded"
-				>
-					More Info
-				</button>
+				<div className="mt-4">
+					<button
+						onClick={() => onShow(media)}
+						className="bg-blue-500 text-white px-4 py-1 rounded"
+					>
+						More Info
+					</button>
+				</div>
 			</div>
 		</div>
 	);
