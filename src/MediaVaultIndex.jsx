@@ -68,8 +68,7 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 		<div className="mb-10">
 			<h2 className="text-xl font-semibold mb-4 text-gray-100">{label}</h2>
 			{items.length > 0 ? (
-				<div className="flex gap-5 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory scrollbar-hide">
-					{items.map(renderCard)}
+				<div className="flex gap-5 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory scrollbar-hide">			{items.map(renderCard)}
 				</div>
 			) : (
 				<p className="text-gray-500">No {label} found.</p>
@@ -80,7 +79,7 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 	return (
 		<div className="p-8 bg-gradient-to-br from-[#121420] to-[#1b2432] min-h-screen">
 			<h1 className="text-3xl font-extrabold mb-6 text-gray-100">
-				Media Vault Index
+				The Media Vault
 			</h1>
 
 			{/* Updated Search Input */}

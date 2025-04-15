@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Rating, ThinStar } from "@smastrom/react-rating";
 import { Modal } from "./Modal"; // Adjust the path as needed
@@ -164,13 +165,33 @@ export function SavedIndex() {
 					</p>
 				</div>
 
-				{/* More Info Button */}
-				<div className="mt-4">
+				{/* Button Row: More Info + Delete */}
+				<div className="mt-4 flex gap-2">
 					<button
 						onClick={() => setSelectedMedia(sm.media_entry)}
-						className="bg-blue-500 text-white px-4 py-1 rounded transition-colors duration-200"
+						className="w-1/2 bg-blue-500 text-white px-4 py-1 rounded transition-colors duration-200"
 					>
 						More Info
+					</button>
+					<button
+						onClick={() => {
+							if (confirm("Are you sure you want to delete this entry?")) {
+								axios
+									.delete(`http://localhost:3000/saved/${sm.id}.json`)
+									.then(() => {
+										setSavedMedia((prevMedia) =>
+											prevMedia.filter((item) => item.id !== sm.id)
+										);
+									})
+									.catch((err) => {
+										console.error("Failed to delete:", err);
+										alert("Failed to delete entry.");
+									});
+							}
+						}}
+						className="w-1/2 bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded transition-colors duration-200"
+					>
+						Delete
 					</button>
 				</div>
 			</div>
@@ -230,8 +251,11 @@ export function SavedIndex() {
 						{renderRow("Archived", archivedGroup)}
 					</div>
 				) : (
-					<p className="text-gray-600">
-						Log in to view and manage your saved media.
+					<p className="text-gray-300">
+						<Link to="/login" className="text-blue-400 underline hover:text-blue-300">
+							Log in
+						</Link>{" "}
+						to view and manage your saved media.
 					</p>
 				)}
 
