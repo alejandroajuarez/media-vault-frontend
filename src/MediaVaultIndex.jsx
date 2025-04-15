@@ -1,9 +1,18 @@
+import { useState } from "react";
+
 export function MediaVaultIndex({ media_entries, onShow }) {
-	const books = media_entries.filter((media) => media.media_type === "Book");
-	const tvShows = media_entries.filter(
+	const [searchQuery, setSearchQuery] = useState("");
+
+	// Filter the media entries by title, based on the search query
+	const filteredMedia = media_entries.filter((media) =>
+		media.title.toLowerCase().includes(searchQuery.toLowerCase())
+	);
+
+	const books = filteredMedia.filter((media) => media.media_type === "Book");
+	const tvShows = filteredMedia.filter(
 		(media) => media.media_type === "TV Show"
 	);
-	const movies = media_entries.filter((media) => media.media_type === "Movie");
+	const movies = filteredMedia.filter((media) => media.media_type === "Movie");
 
 	const renderCard = (media) => (
 		<div
@@ -31,9 +40,7 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 
 				{/* Creator line */}
 				<p className="text-sm mb-2">
-					<strong>
-						{media.media_type === "Book" ? "Author" : "Director"}:
-					</strong>{" "}
+					<strong>{media.media_type === "Book" ? "Author" : "Director"}:</strong>{" "}
 					{media.creator}
 				</p>
 
@@ -66,6 +73,16 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 	return (
 		<div className="p-5">
 			<h1 className="text-2xl font-bold mb-4">Media Vault Index</h1>
+			{/* Search Input */}
+			<div className="mb-5">
+				<input
+					type="text"
+					placeholder="Search by title..."
+					value={searchQuery}
+					onChange={(e) => setSearchQuery(e.target.value)}
+					className="border border-gray-300 rounded px-3 py-2 w-full"
+				/>
+			</div>
 			{renderRow("Books", books)}
 			{renderRow("TV Shows", tvShows)}
 			{renderRow("Movies", movies)}

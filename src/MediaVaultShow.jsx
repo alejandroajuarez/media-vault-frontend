@@ -71,6 +71,7 @@ export function MediaVaultShow({ media }) {
 							<option value="archived">Archived</option>
 						</select>
 					</div>
+
 					<div className="mb-4">
 						<label className="block mb-2">
 							Enter your current progress (e.g., page number, chapter, or episode):
@@ -82,12 +83,19 @@ export function MediaVaultShow({ media }) {
 							className="border border-gray-300 rounded px-2 py-1 w-full"
 						/>
 					</div>
+
+					{/* New Notes Field */}
+					<div className="mb-4">
+						<label className="block mb-2">Additional Notes:</label>
+						<textarea
+							name="notes"
+							placeholder="Enter any additional notes here..."
+							className="border border-gray-300 rounded px-2 py-1 w-full"
+						/>
+					</div>
+
 					<input type="hidden" name="creator" value={media.creator} />
 					<input type="hidden" name="media_entry_id" value={media.id} />
-					{/* Display error message if it exists */}
-					{error && <p className="text-red-500 mb-4">{error}</p>}
-
-					{/* Save button */}
 					<button
 						type="submit"
 						className="bg-blue-500 text-white px-4 py-2 rounded"
