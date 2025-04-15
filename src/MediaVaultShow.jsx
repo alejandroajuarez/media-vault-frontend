@@ -2,18 +2,18 @@ import axios from "axios";
 import { useState } from "react";
 
 export function MediaVaultShow({ media }) {
-	const [error, setError] = useState("");
+	const [error, setError] = useState(""); // For displaying error messages
 
 	const handleSubmitSaved = (event) => {
 		event.preventDefault();
 
-		// Check login status
+		// Check login status before submitting the form
 		if (!localStorage.getItem("jwt")) {
 			setError("You must be logged in to save this");
 			return;
 		}
 
-		// Clear any previous error and proceed with saving
+		// Clear any prior errors if the user is logged in
 		setError("");
 		console.log("Saving Entry to Vault");
 		const params = new FormData(event.target);
@@ -24,8 +24,8 @@ export function MediaVaultShow({ media }) {
 				console.log("Response:", response.data);
 				window.location.href = "/";
 			})
-			.catch((error) => {
-				console.error("Error during saving:", error);
+			.catch((err) => {
+				console.error("Error during saving:", err);
 				setError("An error occurred while saving the entry");
 			});
 	};
@@ -71,7 +71,6 @@ export function MediaVaultShow({ media }) {
 							<option value="archived">Archived</option>
 						</select>
 					</div>
-
 					<div className="mb-4">
 						<label className="block mb-2">
 							Enter your current progress (e.g., page number, chapter, or episode):
@@ -84,7 +83,7 @@ export function MediaVaultShow({ media }) {
 						/>
 					</div>
 
-					{/* New Notes Field */}
+					{/* New Notes Field (if needed) */}
 					<div className="mb-4">
 						<label className="block mb-2">Additional Notes:</label>
 						<textarea
@@ -96,6 +95,8 @@ export function MediaVaultShow({ media }) {
 
 					<input type="hidden" name="creator" value={media.creator} />
 					<input type="hidden" name="media_entry_id" value={media.id} />
+					{/* Display error message if it exists */}
+					{error && <p className="text-red-500 mb-4">{error}</p>}
 					<button
 						type="submit"
 						className="bg-blue-500 text-white px-4 py-2 rounded"
