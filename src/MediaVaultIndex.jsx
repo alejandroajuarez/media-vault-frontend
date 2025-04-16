@@ -55,7 +55,7 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 				<div>
 					<button
 						onClick={() => onShow(media)}
-						className="w-full bg-[#d78c3c] hover:bg-[#a65c5f] text-gray-100 py-2 rounded-md transition-colors duration-200"
+						className="w-full hover:bg-[#d78c3c] bg-[#c19565] text-gray-100 py-2 rounded-md transition-colors duration-200"
 					>
 						More Info
 					</button>

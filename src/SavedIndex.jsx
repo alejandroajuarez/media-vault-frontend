@@ -169,7 +169,7 @@ export function SavedIndex() {
 				<div className="mt-4 flex gap-2">
 					<button
 						onClick={() => setSelectedMedia(sm.media_entry)}
-						className="w-1/2 bg-blue-500 text-white px-4 py-1 rounded transition-colors duration-200"
+						className="w-1/2 hover:bg-[#d78c3c] bg-[#c19565] text-white px-4 py-1 rounded transition-colors duration-200"
 					>
 						More Info
 					</button>
@@ -189,7 +189,7 @@ export function SavedIndex() {
 									});
 							}
 						}}
-						className="w-1/2 bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded transition-colors duration-200"
+						className="w-1/2 bg-red-800 hover:bg-red-700 text-white px-4 py-1 rounded transition-colors duration-200"
 					>
 						Delete
 					</button>
