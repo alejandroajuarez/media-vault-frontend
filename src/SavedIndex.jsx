@@ -153,7 +153,9 @@ export function SavedIndex() {
 				{/* More Info Button pinned to bottom */}
 				<div className="mt-4">
 					<button
-						onClick={() => setSelectedMedia(sm.media_entry)}
+						onClick={() =>
+							setSelectedMedia({ ...sm.media_entry, savedId: sm.id })
+						}
 						className="bg-blue-500 text-white px-4 py-1 rounded"
 					>
 						More Info

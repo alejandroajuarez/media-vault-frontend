@@ -3,18 +3,23 @@ import axios from "axios";
 export function MediaVaultShow({ media }) {
 	const handleSubmitSaved = (event) => {
 		event.preventDefault();
-		console.log("Saving Entry to Vault");
 		const params = new FormData(event.target);
 
-		// No manual transformation is needed if the <select> provides the correct values
-		axios
-			.post("http://localhost:3000/saved.json", params)
+		// Make endpoint dynamic based on media type
+		const url = media.savedId ? `/saved/${media.savedId}.json` : "/saved.json";
+
+		// Decide whether to create or update
+		const method = media.savedId ? axios.patch : axios.post;
+
+		// Use the selected URL and method to send the request
+		method(url, params)
 			.then((response) => {
 				console.log("Response:", response.data);
-				// Optionally, you can redirect or update UI here:
-				window.location.href = "/";
+				window.location.href = "/"; // Redirect to saved index
 			})
-			.catch((error) => console.error("Error during saving:", error));
+			.catch((error) => {
+				console.error("Error saving media:", error);
+			});
 	};
 
 	return (
