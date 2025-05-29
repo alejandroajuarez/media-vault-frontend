@@ -1,10 +1,9 @@
 export function Footer() {
 	return (
-		<footer className="footer">
-			<div className="footer-content text-center">
-				<p>
-					© 2025 Media Vault. All rights reserved | Privacy Policy | Terms of
-					Service
+		<footer className="bg-[#123458] text-white py-4">
+			<div className="max-w-7xl mx-auto text-center  px-4">
+				<p className="text-sm">
+					© 2025 Media Vault. All rights reserved | Privacy Policy | Terms of Service
 				</p>
 			</div>
 		</footer>

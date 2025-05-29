@@ -2,44 +2,47 @@ import { Link } from "react-router-dom";
 import { LogoutLink } from "./LogoutLink";
 
 export function Header() {
-	// Check if a token is present in localStorage
-	const isLoggedIn = !!localStorage.getItem("jwt");
-
 	return (
-		<header>
-			<nav className="flex justify-between items-center bg-gray-800 text-white p-4">
-				{/* Left side: Always show these links */}
-				<div className="flex space-x-4">
-					<Link to="/" className="hover:underline">
-						Home
-					</Link>
-					<Link to="/saved" className="hover:underline">
-						Saved
-					</Link>
-				</div>
-
-				{/* Right side: Conditional rendering */}
-				<ul className="flex space-x-4">
-					{!isLoggedIn ? (
-						<>
-							<li>
-								<Link to="/signup" className="hover:underline">
-									Signup
-								</Link>
-							</li>
-							<li>
-								<Link to="/login" className="hover:underline">
+		<header className="bg-gradient-to-r from-[#123458] to-[#0f2f50] text-white shadow-md">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div className="flex items-center justify-between h-16">
+					{/* Logo or Site Name */}
+					<div className="flex-shrink-0">
+						<Link to="/" className="text-2xl font-extrabold tracking-wide">
+							Media Vault
+						</Link>
+					</div>
+					{/* Navigation Links */}
+					<nav className="flex space-x-6 items-center">
+						<Link
+							to="/saved"
+							className="text-lg hover:text-gray-200 transition-colors duration-200"
+						>
+							Saved
+						</Link>
+						{localStorage.getItem("jwt") ? (
+							<div className="flex items-center">
+								<LogoutLink className="text-lg hover:text-gray-200 transition-colors duration-200" />
+							</div>
+						) : (
+							<>
+								<Link
+									to="/login"
+									className="text-lg hover:text-gray-200 transition-colors duration-200"
+								>
 									Login
 								</Link>
-							</li>
-						</>
-					) : (
-						<li>
-							<LogoutLink />
-						</li>
-					)}
-				</ul>
-			</nav>
+								<Link
+									to="/signup"
+									className="text-lg hover:text-gray-200 transition-colors duration-200"
+								>
+									Signup
+								</Link>
+							</>
+						)}
+					</nav>
+				</div>
+			</div>
 		</header>
 	);
 }
