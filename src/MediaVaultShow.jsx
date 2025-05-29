@@ -70,14 +70,11 @@ export function MediaVaultShow({ media }) {
 
 				{/* Right Column: Media Info and Save Form */}
 				<div className="flex-1 basis-[55%] pl-5">
-					<h1 className="text-2xl text-white font-bold mb-4">
-						Vault Entry Information
+					<h1 className="text-3xl text-white font-bold mb-4">
+						<strong>{media.title}</strong>
 					</h1>
 					<p className="mb-2 text-white">
-						<strong>Title:</strong> {media.title}
-					</p>
-					<p className="mb-2 text-white">
-						<strong>Description:</strong> {media.description}
+						{media.description}
 					</p>
 					<p className="mb-2 text-white">
 						<strong>

@@ -19,10 +19,10 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 	const renderCard = (media) => (
 		<div
 			key={media.id}
-			className="bg-[#1E2938] rounded-xl border border-[var(--gunmetal, #1b2432)] shadow-sm w-72 flex-shrink-0 snap-center flex flex-col hover:shadow-xl transform transition duration-200 hover:scale-105"
+			className="bg-[#1E2938] rounded-xl border border-[var(--gunmetal, #1b2432)] shadow-sm w-72 flex-shrink-0 snap-center flex flex-col hover:shadow-xl transform transition duration-200 hover:scale-102"
 		>
 			{/* Image Container */}
-			<div className="relative pt-8 px-4 pb-4 h-[360px] w-full">
+			<div className="relative pt-8 px-4 pb-4 h-[400px] w-full">
 				<img
 					src={media.image_url}
 					alt={media.title}
@@ -31,7 +31,7 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 			</div>
 
 			{/* Content Container */}
-			<div className="p-6 flex flex-col flex-grow justify-between bg-gradient-to-b from-transparent to-[#1E2938]">
+			<div className="p-3 flex flex-col flex-grow justify-between bg-gradient-to-b from-transparent to-[#1E2938]">
 				<h2 className="text-lg font-bold text-gray-200 mb-2 truncate">
 					{media.title}
 				</h2>
@@ -68,7 +68,7 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 		<div className="mb-10">
 			<h2 className="text-xl font-semibold mb-4 text-gray-100">{label}</h2>
 			{items.length > 0 ? (
-				<div className="flex gap-5 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory scrollbar-hide">			{items.map(renderCard)}
+				<div className="flex gap-5 overflow-x-auto pt-2 pb-2 scroll-smooth snap-x snap-mandatory scrollbar-hide">			{items.map(renderCard)}
 				</div>
 			) : (
 				<p className="text-gray-500">No {label} found.</p>
