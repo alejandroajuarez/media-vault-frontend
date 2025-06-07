@@ -125,7 +125,7 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 						{showLeft && (
 							<button
 								onClick={scrollLeft}
-								className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-blue-500 text-white p-2 rounded-full shadow hover:bg-blue-600"
+								className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-gray-500 text-white p-2 rounded-full shadow hover:bg-blue-600"
 								aria-label={`Scroll left in ${label}`}
 							>
 								◀
@@ -136,7 +136,7 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 						{showRight && (
 							<button
 								onClick={scrollRight}
-								className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-blue-500 text-white p-2 rounded-full shadow hover:bg-blue-600"
+								className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-gray-500 text-white p-2 rounded-full shadow hover:bg-blue-600"
 								aria-label={`Scroll right in ${label}`}
 							>
 								▶
@@ -177,7 +177,7 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 			<div className="mb-8">
 				<input
 					type="text"
-					placeholder="Search by title or creator..."
+					placeholder="Search by Title or Creator..."
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
 					className="w-full border border-gray-600 rounded-lg px-4 py-3 bg-[#1E2938] text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1E2938] select-none"

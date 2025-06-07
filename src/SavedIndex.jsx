@@ -218,7 +218,7 @@ export function SavedIndex() {
 						{showLeft && (
 							<button
 								onClick={scrollLeft}
-								className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-blue-500 text-white p-2 rounded-full shadow hover:bg-blue-600"
+								className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-gray-500 text-white p-2 rounded-full shadow hover:bg-blue-600"
 								aria-label={`Scroll left in ${label}`}
 							>
 								◀
@@ -227,7 +227,7 @@ export function SavedIndex() {
 						{showRight && (
 							<button
 								onClick={scrollRight}
-								className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-blue-500 text-white p-2 rounded-full shadow hover:bg-blue-600"
+								className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-gray-500 text-white p-2 rounded-full shadow hover:bg-blue-600"
 								aria-label={`Scroll right in ${label}`}
 							>
 								▶
