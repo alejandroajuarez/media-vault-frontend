@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export function MediaVaultIndex({ media_entries, onShow }) {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -13,20 +13,24 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 	});
 
 	const books = filteredMedia.filter((media) => media.media_type === "Book");
-	const tvShows = filteredMedia.filter((media) => media.media_type === "TV Show");
+	const tvShows = filteredMedia.filter(
+		(media) => media.media_type === "TV Show"
+	);
 	const movies = filteredMedia.filter((media) => media.media_type === "Movie");
 
 	const renderCard = (media) => (
 		<div
 			key={media.id}
-			className="bg-[#1E2938] rounded-xl border border-[var(--gunmetal, #1b2432)] shadow-sm w-72 flex-shrink-0 snap-center flex flex-col hover:shadow-xl transform transition duration-200 hover:scale-102"
+			className="bg-[#1E2938] rounded-xl border border-[var(--gunmetal, #1b2432)] shadow-sm w-72 flex-shrink-0 flex flex-col hover:shadow-xl transform transition duration-200 hover:scale-102 select-none"
+			draggable={false}
 		>
 			{/* Image Container */}
 			<div className="relative pt-8 px-4 pb-4 h-[400px] w-full">
 				<img
 					src={media.image_url}
 					alt={media.title}
-					className="w-full h-full object-contain"
+					className="w-full h-full object-contain select-none"
+					draggable={false}
 				/>
 			</div>
 
@@ -64,17 +68,104 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 		</div>
 	);
 
-	const renderRow = (label, items) => (
-		<div className="mb-10">
-			<h2 className="text-xl font-semibold mb-4 text-gray-100">{label}</h2>
-			{items.length > 0 ? (
-				<div className="flex gap-5 overflow-x-auto pt-2 pb-2 scroll-smooth snap-x snap-mandatory scrollbar-hide">			{items.map(renderCard)}
-				</div>
-			) : (
-				<p className="text-gray-500">No {label} found.</p>
-			)}
-		</div>
-	);
+	const renderRow = (label, items) => {
+		const scrollContainerRef = useRef(null);
+		const [showLeft, setShowLeft] = useState(false);
+		const [showRight, setShowRight] = useState(false);
+
+		// Scroll by approximately 5.5 items
+		const itemWidth = 288 + 20; // 288px card width + 20px gap
+		const scrollByAmount = itemWidth * 5.5;
+
+		const scrollLeft = () => {
+			scrollContainerRef.current?.scrollBy({
+				left: -scrollByAmount,
+				behavior: "smooth",
+			});
+		};
+
+		const scrollRight = () => {
+			scrollContainerRef.current?.scrollBy({
+				left: scrollByAmount,
+				behavior: "smooth",
+			});
+		};
+
+		// Update arrow visibility based on scroll position and items change
+		useEffect(() => {
+			const container = scrollContainerRef.current;
+			if (!container) return;
+
+			const updateArrows = () => {
+				setShowLeft(container.scrollLeft > 0);
+				// minus a tiny epsilon to avoid floating precision
+				setShowRight(
+					container.scrollLeft <
+						container.scrollWidth - container.clientWidth - 1
+				);
+			};
+
+			// Initial state and on scroll/resize
+			updateArrows();
+			container.addEventListener("scroll", updateArrows);
+			window.addEventListener("resize", updateArrows);
+
+			return () => {
+				container.removeEventListener("scroll", updateArrows);
+				window.removeEventListener("resize", updateArrows);
+			};
+		}, [items.length]);
+
+		return (
+			<div className="mb-10 relative">
+				<h2 className="text-xl font-semibold mb-4 text-gray-100">{label}</h2>
+				{items.length > 0 ? (
+					<>
+						{/* Left Arrow (conditionally visible) */}
+						{showLeft && (
+							<button
+								onClick={scrollLeft}
+								className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-blue-500 text-white p-2 rounded-full shadow hover:bg-blue-600"
+								aria-label={`Scroll left in ${label}`}
+							>
+								◀
+							</button>
+						)}
+
+						{/* Right Arrow (conditionally visible) */}
+						{showRight && (
+							<button
+								onClick={scrollRight}
+								className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-blue-500 text-white p-2 rounded-full shadow hover:bg-blue-600"
+								aria-label={`Scroll right in ${label}`}
+							>
+								▶
+							</button>
+						)}
+
+						{/* Scrollable Container: intercept wheel for horizontal scroll */}
+						<div
+							ref={scrollContainerRef}
+							onWheel={(e) => {
+								e.preventDefault();
+								const delta = e.deltaY || e.deltaX;
+								scrollContainerRef.current.scrollLeft += delta;
+							}}
+							className="flex gap-5 overflow-x-auto pt-2 pb-2 scrollbar-hide"
+							style={{
+								scrollBehavior: "smooth",
+								overscrollBehavior: "contain",
+							}}
+						>
+							{items.map(renderCard)}
+						</div>
+					</>
+				) : (
+					<p className="text-gray-500">No {label} found.</p>
+				)}
+			</div>
+		);
+	};
 
 	return (
 		<div className="p-8 bg-gradient-to-br from-[#121420] to-[#1b2432] min-h-screen">
@@ -82,14 +173,14 @@ export function MediaVaultIndex({ media_entries, onShow }) {
 				The Media Vault
 			</h1>
 
-			{/* Updated Search Input */}
+			{/* Search Input */}
 			<div className="mb-8">
 				<input
 					type="text"
 					placeholder="Search by title or creator..."
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
-					className="w-full border border-gray-600 rounded-lg px-4 py-3 bg-[#1E2938] text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1E2938]"
+					className="w-full border border-gray-600 rounded-lg px-4 py-3 bg-[#1E2938] text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1E2938] select-none"
 				/>
 			</div>
 
