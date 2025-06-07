@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Rating, ThinStar } from "@smastrom/react-rating";
 import { Modal } from "./Modal"; // Adjust the path as needed
 import { MediaVaultShow } from "./MediaVaultShow"; // Adjust the path as needed
@@ -16,7 +16,7 @@ export function SavedIndex() {
 	const [savedMedia, setSavedMedia] = useState([]);
 	const [selectedMediaType, setSelectedMediaType] = useState("Book");
 	const [selectedMedia, setSelectedMedia] = useState(null); // For modal media
-	const [error, setError] = useState(""); // To display errors for non-logged in users
+	const [error, setError] = useState("");
 
 	// Check login status
 	const isLoggedIn = !!localStorage.getItem("jwt");
@@ -27,49 +27,39 @@ export function SavedIndex() {
 			setError("You must be logged in to view your saved media.");
 			return;
 		}
-		console.log("Fetching saved media...");
 		axios
 			.get("http://localhost:3000/saved.json")
 			.then((response) => {
-				console.log("Response from backend:", response.data);
 				setSavedMedia(response.data);
 			})
-			.catch((error) => {
-				console.error("Error fetching saved media:", error);
-				setError("Error fetching saved media.");
-			});
+			.catch(() => setError("Error fetching saved media."));
 	}, [isLoggedIn]);
 
-	// Toggle the favorite status for a given saved media item.
-	const handleToggleFavorite = (savedMediaId, currentFavorite) => {
+	// Toggle favorite status
+	const handleToggleFavorite = (id, current) => {
 		axios
 			.patch(
-				`http://localhost:3000/saved/${savedMediaId}.json`,
-				{ favorite: !currentFavorite },
+				`http://localhost:3000/saved/${id}.json`,
+				{ favorite: !current },
 				{ headers: { "Content-Type": "application/json" } }
 			)
 			.then((response) => {
-				console.log("PATCH response for favorite:", response.data);
-				setSavedMedia((prevMedia) =>
-					prevMedia.map((item) =>
-						item.id === savedMediaId
+				setSavedMedia((prev) =>
+					prev.map((item) =>
+						item.id === id
 							? { ...item, favorite: response.data.favorite }
 							: item
 					)
 				);
 			})
-			.catch((error) => console.error("Error updating favorite:", error));
+			.catch(console.error);
 	};
 
-	// Filter the saved media by the selected media type.
+	// Grouping logic
 	const filteredMedia = savedMedia.filter(
 		(sm) => sm.media_entry.media_type === selectedMediaType
 	);
-
-	// New: Filter for favorites regardless of type.
-	const favoritesGroup = savedMedia.filter((sm) => sm.favorite === true);
-
-	// Group the rest by status.
+	const favoritesGroup = savedMedia.filter((sm) => sm.favorite);
 	const savedGroup = filteredMedia.filter((sm) => sm.media_status === "saved");
 	const inProgressGroup = filteredMedia.filter(
 		(sm) => sm.media_status === "in_progress"
@@ -78,18 +68,22 @@ export function SavedIndex() {
 		(sm) => sm.media_status === "archived"
 	);
 
-	// Render a single media card.
+	// Single card renderer
 	const renderMediaEntry = (sm) => (
 		<div
 			key={sm.id}
-			className="bg-[#1E2938] rounded-xl border border-[var(--gunmetal, #1b2432)] shadow-sm w-72 flex-shrink-0 snap-center flex flex-col hover:shadow-xl transform transition duration-200 hover:scale-105"
+			className="bg-[#1E2938] rounded-xl border border-[var(--gunmetal, #1b2432)] shadow-sm pt-2 w-72 flex-shrink-0 flex flex-col hover:shadow-xl transform transition duration-200 hover:scale-102 select-none"
+			draggable={false}
 		>
-			{/* Image container with favorite button */}
-			<div className="relative p-4 h-90 w-full">
+			<div
+				className="relative pt-8 px-4 pb-4 h-[400px] w-full select-none"
+				draggable={false}
+			>
 				<img
 					src={sm.media_entry.image_url}
 					alt={sm.media_entry.title}
-					className="w-full h-full object-contain"
+					className="w-full h-full object-contain select-none"
+					draggable={false}
 				/>
 				<button
 					onClick={() => handleToggleFavorite(sm.id, sm.favorite)}
@@ -103,22 +97,15 @@ export function SavedIndex() {
 					)}
 				</button>
 			</div>
-
-			{/* Content container */}
 			<div className="p-4 flex flex-col flex-grow justify-between overflow-hidden">
 				<div>
-					{/* Title */}
 					<h3 className="text-xl font-semibold mb-2 truncate text-white">
 						{sm.media_entry.title}
 					</h3>
-
-					{/* Rating */}
 					<div className="mb-2" style={{ maxWidth: "150px" }}>
 						<Rating
 							value={Number(sm.rating)}
 							onChange={(value) => {
-								console.log(`New rating for ${sm.id}:`, value);
-								// PATCH request to update rating on the backend.
 								axios
 									.patch(
 										`http://localhost:3000/saved/${sm.id}.json`,
@@ -126,37 +113,28 @@ export function SavedIndex() {
 										{ headers: { "Content-Type": "application/json" } }
 									)
 									.then((response) => {
-										console.log("PATCH response for rating:", response.data);
-										setSavedMedia((prevMedia) =>
-											prevMedia.map((item) =>
+										setSavedMedia((prev) =>
+											prev.map((item) =>
 												item.id === sm.id
 													? { ...item, rating: response.data.rating }
 													: item
 											)
 										);
 									})
-									.catch((error) =>
-										console.error("Error updating rating:", error)
-									);
+									.catch(console.error);
 							}}
 							itemStyles={myStyles}
 							fractions={2}
 							style={{ maxWidth: 150 }}
 						/>
 					</div>
-
-					{/* Truncated description */}
 					<div className="text-sm mb-2 overflow-hidden line-clamp-3 text-white">
 						{sm.media_entry.description}
 					</div>
-
-					{/* Progress */}
 					<p className="text-sm mb-2 text-white">
 						<strong>Progress: </strong>
 						{sm.progress}
 					</p>
-
-					{/* Creator */}
 					<p className="text-sm mb-2 text-white">
 						<strong>
 							{sm.media_entry.media_type === "Book" ? "Author:" : "Director:"}
@@ -164,8 +142,6 @@ export function SavedIndex() {
 						{sm.media_entry.creator}
 					</p>
 				</div>
-
-				{/* Button Row: More Info + Delete */}
 				<div className="mt-4 flex gap-2">
 					<button
 						onClick={() =>
@@ -181,14 +157,11 @@ export function SavedIndex() {
 								axios
 									.delete(`http://localhost:3000/saved/${sm.id}.json`)
 									.then(() => {
-										setSavedMedia((prevMedia) =>
-											prevMedia.filter((item) => item.id !== sm.id)
+										setSavedMedia((prev) =>
+											prev.filter((item) => item.id !== sm.id)
 										);
 									})
-									.catch((err) => {
-										console.error("Failed to delete:", err);
-										alert("Failed to delete entry.");
-									});
+									.catch(() => alert("Failed to delete entry."));
 							}
 						}}
 						className="w-1/2 bg-red-800 hover:bg-red-700 text-white px-4 py-1 rounded transition-colors duration-200"
@@ -200,19 +173,88 @@ export function SavedIndex() {
 		</div>
 	);
 
-	// Reusable renderRow function for a category.
-	const renderRow = (label, items) => (
-		<div className="mb-10">
-			<h2 className="text-xl font-bold mb-4 text-white">{label}</h2>
-			{items.length > 0 ? (
-				<div className="flex gap-5 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory scrollbar-hide">
-					{items.map(renderMediaEntry)}
-				</div>
-			) : (
-				<p className="text-gray-500">No {label} found.</p>
-			)}
-		</div>
-	);
+	// Reusable row renderer with arrows & wheel scroll
+	const renderRow = (label, items) => {
+		const scrollContainerRef = useRef(null);
+		const [showLeft, setShowLeft] = useState(false);
+		const [showRight, setShowRight] = useState(false);
+		const itemWidth = 288 + 20;
+		const scrollByAmount = itemWidth * 5.5;
+
+		const scrollLeft = () => {
+			scrollContainerRef.current?.scrollBy({
+				left: -scrollByAmount,
+				behavior: "smooth",
+			});
+		};
+		const scrollRight = () => {
+			scrollContainerRef.current?.scrollBy({
+				left: scrollByAmount,
+				behavior: "smooth",
+			});
+		};
+
+		useEffect(() => {
+			const c = scrollContainerRef.current;
+			if (!c) return;
+			const update = () => {
+				setShowLeft(c.scrollLeft > 0);
+				setShowRight(c.scrollLeft < c.scrollWidth - c.clientWidth - 1);
+			};
+			update();
+			c.addEventListener("scroll", update);
+			window.addEventListener("resize", update);
+			return () => {
+				c.removeEventListener("scroll", update);
+				window.removeEventListener("resize", update);
+			};
+		}, [items.length]);
+
+		return (
+			<div className="mb-10 relative">
+				<h2 className="text-xl font-bold mb-4 text-white">{label}</h2>
+				{items.length > 0 ? (
+					<>
+						{showLeft && (
+							<button
+								onClick={scrollLeft}
+								className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-blue-500 text-white p-2 rounded-full shadow hover:bg-blue-600"
+								aria-label={`Scroll left in ${label}`}
+							>
+								◀
+							</button>
+						)}
+						{showRight && (
+							<button
+								onClick={scrollRight}
+								className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-blue-500 text-white p-2 rounded-full shadow hover:bg-blue-600"
+								aria-label={`Scroll right in ${label}`}
+							>
+								▶
+							</button>
+						)}
+						<div
+							ref={scrollContainerRef}
+							onWheel={(e) => {
+								e.preventDefault();
+								const d = e.deltaY || e.deltaX;
+								scrollContainerRef.current.scrollLeft += d;
+							}}
+							className="flex gap-5 overflow-x-auto pb-4 pt-2 scrollbar-hide"
+							style={{
+								scrollBehavior: "smooth",
+								overscrollBehavior: "contain",
+							}}
+						>
+							{items.map(renderMediaEntry)}
+						</div>
+					</>
+				) : (
+					<p className="text-gray-500">No {label} found.</p>
+				)}
+			</div>
+		);
+	};
 
 	return (
 		<div className="min-h-screen flex flex-col bg-gradient-to-br from-[#121420] to-[#1b2432]">
@@ -220,10 +262,7 @@ export function SavedIndex() {
 				<h1 className="text-2xl font-bold mb-4 text-white">
 					Your Vaulted Media
 				</h1>
-
 				{error && <p className="text-red-500 mb-4">{error}</p>}
-
-				{/* Filter Buttons */}
 				<div className="mb-5 text-white">
 					<button
 						onClick={() => setSelectedMediaType("Book")}
@@ -250,7 +289,6 @@ export function SavedIndex() {
 						Movies
 					</button>
 				</div>
-
 				{isLoggedIn ? (
 					<div className="space-y-10">
 						{renderRow("Favorites", favoritesGroup)}
@@ -269,8 +307,6 @@ export function SavedIndex() {
 						to view and manage your saved media.
 					</p>
 				)}
-
-				{/* Modal for More Info */}
 				{selectedMedia && (
 					<Modal show={true} onClose={() => setSelectedMedia(null)}>
 						<MediaVaultShow media={selectedMedia} />
